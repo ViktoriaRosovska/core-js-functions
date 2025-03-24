@@ -18,7 +18,9 @@
  *
  */
 function getCurrentFunctionName() {
-  throw new Error('Not implemented');
+  const funcName = `${getCurrentFunctionName}`.split(' ')[1];
+  const index = funcName.indexOf('(');
+  return funcName.substring(0, index);
 }
 
 /**
