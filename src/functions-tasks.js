@@ -104,8 +104,31 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...rest) {
+  // let str = '';
+  // if (!rest.length) return null;
+  // if (rest.length === 1) str = `y = ${rest[0]}`;
+  // if (rest.length === 2) {
+  //   const first = rest[0];
+  //   const second = rest[1];
+  //   if (first === 0) {
+  //     if (second === 0) str = null;
+  //     str = `y = ${second}`;
+  //   }
+  //   if (first === 1) {
+  //     if (second > 0) str = `y = x + ${second}`;
+  //     else str = `y = x - ${second * -1}`;
+  //   }
+  //   if (first === -1) {
+  //     if (second > 0) str = `y = -x + ${second}`;
+  //     else str = `y = -x - ${second * -1}`;
+  //   }
+  //   if (first !== 1 && first !== -1 && second > 1)
+  //     str = `y = ${first} * x + ${second}`;
+  //   if (first !== 1 && first !== -1 && second < 1)
+  //     str = `y = ${first} * x - ${second * -1}`;
+  // }
+  return rest;
 }
 
 /**
@@ -122,8 +145,11 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  const cache = new Map();
+  if (cache.has(func)) return cache.get(func);
+  cache.set(func, func());
+  return () => cache.get(func);
 }
 
 /**
