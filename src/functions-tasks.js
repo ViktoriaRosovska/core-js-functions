@@ -18,9 +18,7 @@
  *
  */
 function getCurrentFunctionName() {
-  const funcName = `${getCurrentFunctionName}`.split(' ')[1];
-  const index = funcName.indexOf('(');
-  return funcName.substring(0, index);
+  return getCurrentFunctionName.name;
 }
 
 /**
@@ -104,31 +102,19 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom(...rest) {
-  // let str = '';
-  // if (!rest.length) return null;
-  // if (rest.length === 1) str = `y = ${rest[0]}`;
-  // if (rest.length === 2) {
-  //   const first = rest[0];
-  //   const second = rest[1];
-  //   if (first === 0) {
-  //     if (second === 0) str = null;
-  //     str = `y = ${second}`;
-  //   }
-  //   if (first === 1) {
-  //     if (second > 0) str = `y = x + ${second}`;
-  //     else str = `y = x - ${second * -1}`;
-  //   }
-  //   if (first === -1) {
-  //     if (second > 0) str = `y = -x + ${second}`;
-  //     else str = `y = -x - ${second * -1}`;
-  //   }
-  //   if (first !== 1 && first !== -1 && second > 1)
-  //     str = `y = ${first} * x + ${second}`;
-  //   if (first !== 1 && first !== -1 && second < 1)
-  //     str = `y = ${first} * x - ${second * -1}`;
-  // }
-  return rest;
+function getPolynom(...args) {
+  if (args.length === 0) return null;
+
+  return (x) => {
+    let pow = 1;
+    let result = 0;
+    for (let i = args.length - 1; i >= 0; i -= 1) {
+      result += args[i] * pow;
+      pow *= x;
+    }
+
+    return result;
+  };
 }
 
 /**
@@ -167,10 +153,19 @@ function memoize(func) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
-}
+function retry(func, attempts) {
+  return () => {
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return func();
+      } catch {
+        // empty
+      }
+    }
 
+    return null;
+  };
+}
 /**
  * Returns the logging wrapper for the specified method,
  * Logger has to log the start and end of calling the specified function.
@@ -194,8 +189,14 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const str = args.map((arg) => JSON.stringify(arg)).join(',');
+    logFunc(`${func.name}(${str}) starts`);
+    const result = func(...args);
+    logFunc(`${func.name}(${str}) ends`);
+    return result;
+  };
 }
 
 /**
@@ -232,8 +233,19 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+function getIdGeneratorFunction(startFrom) {
+  const cache = new Map();
+  return () => {
+    if (!cache.has(getIdGeneratorFunction.name)) {
+      cache.set(getIdGeneratorFunction.name, startFrom);
+    } else {
+      cache.set(
+        getIdGeneratorFunction.name,
+        cache.get(getIdGeneratorFunction.name) + 1
+      );
+    }
+    return cache.get(getIdGeneratorFunction.name);
+  };
 }
 
 module.exports = {
